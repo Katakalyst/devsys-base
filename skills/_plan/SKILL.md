@@ -5,7 +5,7 @@ name: _plan
 
 Review and organise the work before it is built — backlog health, scope, gaps, order.
 
-Run this at the start of every `/developer-system:work` session after orientation, and any time the project feels unclear or disorganised.
+Run this at the start of every `/work` session after orientation, and any time the project feels unclear or disorganised.
 
 The user is not involved in this process unless a product decision surfaces that only they can make.
 
@@ -24,7 +24,7 @@ The user is not involved in this process unless a product decision surfaces that
 
 ## Step 1 — Read the current state
 
-If running as part of `/developer-system:work`, use the project state already established in orientation — do not re-read files already loaded this session.
+If running as part of `/work`, use the project state already established in orientation — do not re-read files already loaded this session.
 
 If running standalone, read in this order:
 - `CLAUDE.md` — project context and conventions
@@ -63,7 +63,7 @@ Compare what is in the specs against what is in the issue backlog.
 An issue that was added without a corresponding spec requirement may be scope creep. For each one, determine:
 - Is this clearly implied by an existing spec? If yes, note the link in the issue.
 - Is this a technical necessity (infrastructure, refactoring) that does not need a spec? If yes, label it `chore`.
-- Is this new scope that the user has not agreed to? If yes, run `/developer-system:talk` and flag it to the user — do not implement it silently.
+- Is this new scope that the user has not agreed to? If yes, run `/talk` and flag it to the user — do not implement it silently.
 
 **Specs with no issues:**
 A spec requirement that has no corresponding issue has fallen through the cracks. Create the missing issues.
@@ -107,7 +107,7 @@ For each dependency, add a note to the issue description: "Depends on #N".
 
 If milestones exist, prioritise issues belonging to the nearest milestone first. Within a milestone, order by dependency then by complexity — smaller issues first to build momentum.
 
-Produce the final order for the remaining work. This becomes the sequence `/developer-system:work` will follow.
+Produce the final order for the remaining work. This becomes the sequence `/work` will follow.
 
 ---
 

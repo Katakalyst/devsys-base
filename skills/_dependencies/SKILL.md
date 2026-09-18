@@ -30,7 +30,7 @@ Before adding any new dependency:
    - How large is it? (a 50MB dependency for a utility function is not justified)
    - Does it bring in many transitive dependencies? (check before adding)
 
-4. **Add it and run `/developer-system:_scan`** — Trivy will flag any known vulnerabilities in the new dependency immediately.
+4. **Add it and run `/_scan`** — Trivy will flag any known vulnerabilities in the new dependency immediately.
 
 5. **Record the decision** if the choice between two options was non-obvious. Write a brief decision record in `docs/decisions/`.
 
@@ -59,13 +59,13 @@ When working on an area of the code, check if the dependencies it uses have newe
 2. If no breaking changes: update and run tests
 3. If breaking changes exist: assess the effort to migrate; if small, do it; if large, create an issue
 
-Run `/developer-system:_scan` after any dependency update — new versions can introduce new vulnerabilities as well as fix them.
+Run `/_scan` after any dependency update — new versions can introduce new vulnerabilities as well as fix them.
 
 ---
 
 ## Security vulnerabilities in dependencies
 
-When `/developer-system:_scan` reports a vulnerability in a dependency:
+When `/_scan` reports a vulnerability in a dependency:
 
 - **CRITICAL / HIGH with a fix available:** Update to the fixed version immediately. Do not ship with known critical vulnerabilities.
 - **CRITICAL / HIGH with no fix:** Tell the user. Assess whether the vulnerability is exploitable in this project's context. Options: find an alternative dependency, apply a patch, or accept the risk explicitly with the user's knowledge.

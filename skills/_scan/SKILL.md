@@ -7,8 +7,8 @@ Run Trivy and Semgrep on the current project. Report findings. Block on critical
 
 ### Step 0 — Preconditions
 
-- `trivy --version` — if missing, tell the user to run `/developer-system:setup` and stop.
-- `semgrep --version` — if missing, tell the user to run `/developer-system:setup` and stop.
+- `trivy --version` — if missing, tell the user the container's devsys-base image is broken or stale and to run `devsys rebuild` or `devsys update`, then stop.
+- `semgrep --version` — if missing, same as above, then stop.
 - `git rev-parse --is-inside-work-tree` — if it fails, tell the user to run this from inside a project directory and stop.
 
 ## Steps
@@ -60,7 +60,7 @@ For lower severity findings, give a count only unless the user asks for details.
 If any Trivy CRITICAL findings or Semgrep ERROR findings exist:
 - Do not allow the current work to be pushed or merged until they are resolved
 - Tell the user exactly what needs to be fixed
-- After fixes are applied, run `/developer-system:_scan` again to confirm clean
+- After fixes are applied, run `/_scan` again to confirm clean
 
 If only Trivy HIGH or Semgrep WARNING findings exist:
 - Report them and recommend fixing before release

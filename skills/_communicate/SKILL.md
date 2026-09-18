@@ -41,7 +41,7 @@ Do not involve the user for:
 
 ## Progress updates
 
-Keep the user informed without requiring their attention. During `/developer-system:work`:
+Keep the user informed without requiring their attention. During `/work`:
 
 - When starting an issue: "Working on #N — <title>"
 - When an MR is merged: "Done: #N — <title>"
@@ -92,7 +92,7 @@ After every completed issue, offer the user a moment to try what was just built 
 
 When the user gives feedback:
 - A bug report → fix it immediately as a hotfix before continuing
-- A change of mind about behaviour → capture it through `/developer-system:talk`, update the spec, then continue
+- A change of mind about behaviour → capture it through `/talk`, update the spec, then continue
 - Approval → continue to the next issue
 
 ---

@@ -52,7 +52,7 @@ GET https://gitlab.com/api/v4/user
 ```
 Store the `id` field from the response. Use it for `assignee_id` throughout this session.
 
-After completing all steps, run `/developer-system:_plan`. It will review the backlog, fix any issues with it, and produce the order in which to work. Only after `/developer-system:_plan` completes should you begin the loop.
+After completing all steps, run `/_plan`. It will review the backlog, fix any issues with it, and produce the order in which to work. Only after `/_plan` completes should you begin the loop.
 
 ---
 
@@ -62,7 +62,7 @@ The agent tracks its position in the loop using a `work-state/` folder in the pr
 
 - Before each step: read `work-state/current.md` to confirm where you are
 - After each step: update `current.md` to the next step and commit it alongside any code changes; commit the state file alone if there are no code changes
-- When the issue is fully done (after `/developer-system:_release` completes): delete the entire `work-state/` folder and commit the deletion
+- When the issue is fully done (after `/_release` completes): delete the entire `work-state/` folder and commit the deletion
 - On session start: if `work-state/current.md` exists, read it before orientation and skip straight to the right step
 
 ---
@@ -84,7 +84,7 @@ Fetch open issues:
 GET /projects/:id/issues?state=opened&order_by=priority&sort=asc&assignee_id=None
 ```
 
-Pick the first unassigned issue following the order `/developer-system:_plan` produced. If all open issues are already assigned to you from a previous session, pick the oldest one.
+Pick the first unassigned issue following the order `/_plan` produced. If all open issues are already assigned to you from a previous session, pick the oldest one.
 
 If there are no open issues: stop. Tell the user all issues are done and list what was completed this session.
 
@@ -129,13 +129,13 @@ Update `work-state/current.md` step to `test`. (This update can ride in any impl
 
 Run the project's test suite. Fix any failures before continuing.
 
-If tests do not exist yet for the changed code, write them. See the `/developer-system:_testing` skill for guidance.
+If tests do not exist yet for the changed code, write them. See the `/_testing` skill for guidance.
 
 Update `work-state/current.md` step to `scan`. Commit alongside the test commit.
 
 ### Step 6 — Scan
 
-Run `/developer-system:_scan`. Fix any CRITICAL findings before continuing. Note HIGH findings in the MR description.
+Run `/_scan`. Fix any CRITICAL findings before continuing. Note HIGH findings in the MR description.
 
 ### Step 7 — Open an MR
 
@@ -197,15 +197,15 @@ Tell the user: "Done: #N — <title>"
 
 ### Step 10 — Release
 
-Run `/developer-system:_release`. It determines automatically whether a release is warranted.
+Run `/_release`. It determines automatically whether a release is warranted.
 
 ### Step 11 — User feedback
 
 Tell the user: "Done: #N — <title>. Say something if you want to review it first — otherwise I'll continue in 5 minutes."
 
-Schedule a one-shot cron 5 minutes out with the prompt: "Resume `/developer-system:work` from `work-state/current.md`."
+Schedule a one-shot cron 5 minutes out with the prompt: "Resume `/work` from `work-state/current.md`."
 
-If the user responds before it fires, handle their feedback first and cancel the scheduled cron. If feedback is a bug, fix it on a new branch immediately. If feedback changes requirements, run `/developer-system:talk` to capture it properly, then continue.
+If the user responds before it fires, handle their feedback first and cancel the scheduled cron. If feedback is a bug, fix it on a new branch immediately. If feedback changes requirements, run `/talk` to capture it properly, then continue.
 
 Delete `work-state/` entirely and commit the deletion to main before proceeding.
 
@@ -222,8 +222,8 @@ If the user reports an urgent bug that must be fixed immediately — regardless 
 1. Stop the current loop
 2. Create an issue labelled `hotfix`
 3. Create a branch from main: `fix/<iid>-<description>`
-4. Fix the bug, write a test that would have caught it, run `/developer-system:_scan`
-5. Open an MR, merge, run `/developer-system:_release`
+4. Fix the bug, write a test that would have caught it, run `/_scan`
+5. Open an MR, merge, run `/_release`
 6. Return to the normal loop
 
 A hotfix bypasses normal priority ordering. Do not defer it.
@@ -235,11 +235,11 @@ A hotfix bypasses normal priority ordering. Do not defer it.
 If the user changes a requirement while work is in progress:
 
 1. Stop and assess: does the change affect the current branch?
-2. If yes: commit the current work as a `wip:` commit, push the branch, then run `/developer-system:talk` to capture the new requirement properly
-3. After `/developer-system:talk` completes and any affected specs are updated, either amend the current branch or close it and start fresh depending on the extent of the change
-4. Run `/developer-system:_plan` again before continuing — the backlog may need reordering
+2. If yes: commit the current work as a `wip:` commit, push the branch, then run `/talk` to capture the new requirement properly
+3. After `/talk` completes and any affected specs are updated, either amend the current branch or close it and start fresh depending on the extent of the change
+4. Run `/_plan` again before continuing — the backlog may need reordering
 
-Do not silently adapt to verbal requirement changes. Every change to requirements must go through `/developer-system:talk` and be recorded.
+Do not silently adapt to verbal requirement changes. Every change to requirements must go through `/talk` and be recorded.
 
 ---
 

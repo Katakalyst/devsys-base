@@ -17,7 +17,7 @@ It does not analyse your code — it analyses what your code depends on. A clean
 
 ## When to run it
 
-Run Trivy before opening any MR. The `/developer-system:_scan` skill does this automatically. Do not push code for review without a clean (or reviewed) Trivy result.
+Run Trivy before opening any MR. The `/_scan` skill does this automatically. Do not push code for review without a clean (or reviewed) Trivy result.
 
 ---
 

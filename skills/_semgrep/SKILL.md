@@ -17,7 +17,7 @@ Unlike Trivy which checks dependencies, Semgrep checks the code you write. It ca
 
 ## When to run it
 
-Run Semgrep before opening any MR. The `/developer-system:_scan` skill does this automatically. Do not push code for review without a clean (or reviewed) Semgrep result.
+Run Semgrep before opening any MR. The `/_scan` skill does this automatically. Do not push code for review without a clean (or reviewed) Semgrep result.
 
 ---
 

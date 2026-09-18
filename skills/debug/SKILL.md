@@ -55,7 +55,7 @@ Make the failing test pass. Run the full test suite to confirm nothing else brok
 
 Create an issue for the bug if one does not already exist. Use it to track the fix.
 
-Follow the normal MR flow defined in `/developer-system:work`.
+Follow the normal MR flow defined in `/work`.
 
 ---
 

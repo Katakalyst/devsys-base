@@ -49,7 +49,7 @@ Calculate the new version by applying the bump to the last tag (or `0.0.0`).
 
 ### 5. Run a scan
 
-Run `/developer-system:_scan`. If any CRITICAL findings exist, stop and tell the user. Do not release with known critical vulnerabilities.
+Run `/_scan`. If any CRITICAL findings exist, stop and tell the user. Do not release with known critical vulnerabilities.
 
 ### 6. Write the changelog entry
 
@@ -130,7 +130,7 @@ git cherry-pick <commit-hash>
 
 ### 4. Run scan and tests
 
-Run `/developer-system:_scan`. Run the test suite. Fix any failures.
+Run `/_scan`. Run the test suite. Fix any failures.
 
 ### 5. Determine version bump and write changelog
 

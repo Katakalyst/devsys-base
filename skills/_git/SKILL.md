@@ -154,7 +154,7 @@ git blame <file>
 
 ## Tagging
 
-Tags are created only by `/developer-system:_release`. Do not create tags manually.
+Tags are created only by `/_release`. Do not create tags manually.
 
 ---
 
