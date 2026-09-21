@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         gnupg \
         nodejs \
         npm \
+        procps \
         python3 \
         python3-pip \
         python3-venv \
@@ -51,4 +52,9 @@ COPY skills/ /etc/codex/skills/
 COPY CLAUDE.md /opt/devsys/CLAUDE.md
 COPY AGENTS.md /opt/devsys/AGENTS.md
 
+COPY watchdog.sh /usr/local/bin/watchdog
+RUN chmod +x /usr/local/bin/watchdog
+
+ENV SHELL=/bin/bash
 WORKDIR /root/workspace
+CMD ["/usr/local/bin/watchdog"]
