@@ -27,16 +27,16 @@ RUN curl -fsSL -o /tmp/glab.deb \
     && dpkg -i /tmp/glab.deb \
     && rm -f /tmp/glab.deb
 
-ARG CLAUDE_CODE_VERSION=2.1.61
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+ARG CLAUDE_CODE_MIN_VERSION=2.1.61
+RUN npm install -g "@anthropic-ai/claude-code@>=${CLAUDE_CODE_MIN_VERSION}"
 ENV DISABLE_AUTOUPDATER=1
 
 RUN mv /usr/local/bin/claude /usr/local/bin/_claude
 COPY claude-wrapper.sh /usr/local/bin/claude
 RUN chmod +x /usr/local/bin/claude
 
-ARG CODEX_VERSION=0.155.0
-RUN npm install -g @openai/codex@${CODEX_VERSION}
+ARG CODEX_MIN_VERSION=0.155.0
+RUN npm install -g "@openai/codex@>=${CODEX_MIN_VERSION}"
 
 RUN mv /usr/local/bin/codex /usr/local/bin/_codex
 COPY codex-wrapper.sh /usr/local/bin/codex
