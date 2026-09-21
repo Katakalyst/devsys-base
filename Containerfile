@@ -38,10 +38,17 @@ RUN chmod +x /usr/local/bin/claude
 ARG CODEX_VERSION=0.155.0
 RUN npm install -g @openai/codex@${CODEX_VERSION}
 
-RUN mkdir -p /etc/claude-code
+RUN mv /usr/local/bin/codex /usr/local/bin/_codex
+COPY codex-wrapper.sh /usr/local/bin/codex
+RUN chmod +x /usr/local/bin/codex
+
+RUN mkdir -p /etc/claude-code /etc/codex
 COPY managed-settings.json /etc/claude-code/managed-settings.json
+COPY codex-config.toml /etc/codex/config.toml
 
 COPY skills/ /opt/devsys/.claude/skills/
+COPY skills/ /etc/codex/skills/
 COPY CLAUDE.md /opt/devsys/CLAUDE.md
+COPY AGENTS.md /opt/devsys/AGENTS.md
 
 WORKDIR /root/workspace
