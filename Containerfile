@@ -28,16 +28,28 @@ RUN curl -fsSL -o /tmp/glab.deb \
     && dpkg -i /tmp/glab.deb \
     && rm -f /tmp/glab.deb
 
-# Installs the latest version. To pin, replace "latest" with a version: e.g. "2.1.61" or "<=2.1.61"
-RUN npm install -g @anthropic-ai/claude-code@latest
+# Caret range, not "latest": floats to the newest 2.x release automatically
+# (bug fixes, new features) but stops at a 3.x major, where semver convention
+# allows a breaking change. Nothing today argues for holding it back further
+# than that — if a future 2.x release still breaks something devsys depends
+# on, pin it back manually (e.g. "2.1.61").
+ARG CLAUDE_CODE_VERSION=^2.1.61
+RUN npm install -g @anthropic-ai/claude-code@"${CLAUDE_CODE_VERSION}"
 ENV DISABLE_AUTOUPDATER=1
 
 RUN mv /usr/local/bin/claude /usr/local/bin/_claude
 COPY claude-wrapper.sh /usr/local/bin/claude
 RUN chmod +x /usr/local/bin/claude
 
-# Installs the latest version. To pin, replace "latest" with a version: e.g. "0.155.0" or "<=0.155.0"
-RUN npm install -g @openai/codex@latest
+# Caret range, not "latest" — but note npm's caret is patch-only below 1.0.0:
+# ^0.155.0 floats >=0.155.0 <0.156.0, not the full 0.x line. Deliberately
+# narrower than Claude's range above, since Codex's pre-1.0 releases have
+# been moving fast and are more likely to change flags/config devsys
+# depends on. Nothing today argues for holding it back further than that —
+# if a future patch release still breaks something, pin it back manually
+# (e.g. "0.155.0").
+ARG CODEX_VERSION=^0.155.0
+RUN npm install -g @openai/codex@"${CODEX_VERSION}"
 
 RUN mv /usr/local/bin/codex /usr/local/bin/_codex
 COPY codex-wrapper.sh /usr/local/bin/codex
