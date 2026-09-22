@@ -28,20 +28,18 @@ RUN curl -fsSL -o /tmp/glab.deb \
     && dpkg -i /tmp/glab.deb \
     && rm -f /tmp/glab.deb
 
-# Caret range: floats to newest 2.x automatically, stops before 3.x. Pin
-# manually if a future release breaks something.
-ARG CLAUDE_CODE_VERSION=^2.1.61
-RUN npm install -g @anthropic-ai/claude-code@"${CLAUDE_CODE_VERSION}"
+# Nothing currently requires pinning, so stay on latest. If a future
+# release breaks something, switch to: ARG CLAUDE_CODE_VERSION=^2.1.61
+RUN npm install -g @anthropic-ai/claude-code@latest
 ENV DISABLE_AUTOUPDATER=1
 
 RUN mv /usr/local/bin/claude /usr/local/bin/_claude
 COPY claude-wrapper.sh /usr/local/bin/claude
 RUN chmod +x /usr/local/bin/claude
 
-# Caret range: pre-1.0, so this only floats patches (0.155.x). Pin manually
-# if a future release breaks something.
-ARG CODEX_VERSION=^0.155.0
-RUN npm install -g @openai/codex@"${CODEX_VERSION}"
+# Nothing currently requires pinning, so stay on latest. If a future
+# release breaks something, switch to: ARG CODEX_VERSION=^0.155.0
+RUN npm install -g @openai/codex@latest
 
 RUN mv /usr/local/bin/codex /usr/local/bin/_codex
 COPY codex-wrapper.sh /usr/local/bin/codex
