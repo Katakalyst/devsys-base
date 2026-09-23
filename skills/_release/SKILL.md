@@ -5,6 +5,8 @@ name: _release
 
 Called by `/work` after every merge to main. Determines whether a release is warranted, and if so asks the user for approval before creating one.
 
+**Platform note:** commands below use `glab` (GitLab). For a GitHub-hosted repo, use the `gh` equivalent — see `_github`'s skill (its `gh pr create` has no create-time "remove source branch" flag, unlike `glab mr create` — that happens at merge time instead: `gh pr merge --delete-branch`).
+
 ## When to run
 
 Run this automatically after every MR merge to main.

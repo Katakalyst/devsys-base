@@ -33,7 +33,7 @@ GITLAB_TOKEN=$(devsys-token) glab issue list --state opened
 GH_TOKEN=$(devsys-token) gh issue list
 ```
 
-Run it from inside the repo the command is about (or pass the repo's path as an argument: `devsys-token frontend`). Every example command in `_gitlab`'s skill and elsewhere already shows this prefix — copy them as written rather than the bare `glab`/`gh` form.
+Run it from inside the repo the command is about (or pass the repo's path as an argument: `devsys-token frontend`). Every example command in `_gitlab`'s and `_github`'s skills already shows this prefix — copy them as written rather than the bare `glab`/`gh` form. Check which platform a given repo is on (`git remote get-url origin` — a `github.com` host means GitHub) and consult the matching skill.
 
 Plain `git` (`push`/`fetch`/`pull`) does not need this — the correct credential is already embedded in that repo's remote URL.
 

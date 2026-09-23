@@ -7,6 +7,8 @@ The core autonomous development loop. Pick up the next open issue, implement it,
 
 The user starts this skill. After that, proceed autonomously; pause only when a stop condition is met.
 
+**Platform note:** the commands below use `glab` (GitLab). If the repo you're working in is hosted on GitHub instead (`git remote get-url origin` shows a `github.com` host), use the equivalent `gh` command at each step — see `_github`'s skill for the exact mapping (`gh issue`/`gh pr`/`gh run` cover what `glab issue`/`glab mr`/`glab ci` do here). Either way, prefix the command with its token — see `_gitlab`'s or `_github`'s skill for why.
+
 ---
 
 ## Session start

@@ -28,6 +28,12 @@ RUN curl -fsSL -o /tmp/glab.deb \
     && dpkg -i /tmp/glab.deb \
     && rm -f /tmp/glab.deb
 
+ARG GH_VERSION=2.101.0
+RUN curl -fsSL -o /tmp/gh.deb \
+        "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.deb" \
+    && dpkg -i /tmp/gh.deb \
+    && rm -f /tmp/gh.deb
+
 # Nothing currently requires pinning, so stay on latest. If a future
 # release breaks something, switch to: ARG CLAUDE_CODE_VERSION=^2.1.61
 RUN npm install -g @anthropic-ai/claude-code@latest

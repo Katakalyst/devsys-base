@@ -9,6 +9,8 @@ Run this at the start of every `/work` session after orientation, and any time t
 
 The user is not involved in this process unless a product decision surfaces that only they can make.
 
+**Platform note:** commands below use `glab` (GitLab). For a GitHub-hosted repo, use the `gh` equivalent — see `_github`'s skill (its Issues section covers the milestone-listing gap specifically, since `gh` has no native milestone command).
+
 ---
 
 ## What this skill does
