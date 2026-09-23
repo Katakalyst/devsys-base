@@ -223,3 +223,5 @@ GH_TOKEN=$(devsys-token) gh api <path>
 Example: `GH_TOKEN=$(devsys-token) gh api "repos/{owner}/{repo}/actions/runs?per_page=1"`
 
 **In a multi-repo project, run these from inside the specific repo the command is about** — `devsys-token` resolves the credential for whichever repo the current directory is in. From outside any repo, pass its path instead: `GH_TOKEN=$(devsys-token frontend) gh issue list`.
+
+**A repo can also have more than one remote** (platform migration, a mirror, a fork/upstream pair — `devsys auth` sets these up the same way as a normal remote). `devsys-token`/`devsys-platform` default to `origin`; pass the remote name as a second argument only when you're deliberately targeting `gh`/`glab` at a different one: `GH_TOKEN=$(devsys-token . release-mirror) gh release create --repo owner/mirror-repo`. Plain `git push`/`fetch`/`pull` against any remote needs none of this — the credential already travels embedded in that remote's own URL.

@@ -9,12 +9,17 @@
 # POSIX sh. Not `set -e`/`set -u` here — that's each caller's own choice;
 # this file only defines functions, it does nothing on its own when sourced.
 
-# devsys_remote_url REPO_PATH — prints the repo's origin remote URL to
-# stdout, or prints an error to stderr and returns non-zero if there isn't one.
+# devsys_remote_url REPO_PATH [REMOTE_NAME] — prints the named remote's URL
+# (REMOTE_NAME defaults to "origin") to stdout, or prints an error to stderr
+# and returns non-zero if that remote doesn't exist. A repo can have more
+# than one remote (Git Remote & Credential Spec §7's multi-remote decision);
+# REMOTE_NAME picks which one, defaulting to "origin" so every existing
+# single-remote call site is unaffected.
 devsys_remote_url() {
     _drr_path="${1:-.}"
-    if ! _drr_url=$(git -C "$_drr_path" remote get-url origin 2>/dev/null); then
-        echo "devsys: no 'origin' remote in $_drr_path" >&2
+    _drr_remote="${2:-origin}"
+    if ! _drr_url=$(git -C "$_drr_path" remote get-url "$_drr_remote" 2>/dev/null); then
+        echo "devsys: no '$_drr_remote' remote in $_drr_path" >&2
         return 1
     fi
     printf '%s\n' "$_drr_url"

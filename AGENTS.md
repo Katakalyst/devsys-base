@@ -35,7 +35,7 @@ GH_TOKEN=$(devsys-token) gh issue list
 
 Run it from inside the repo the command is about (or pass the repo's path as an argument: `devsys-token frontend`). Every example command in `_gitlab`'s and `_github`'s skills already shows this prefix — copy them as written rather than the bare `glab`/`gh` form. Check which platform a given repo is on with `devsys-platform` (prints `gitlab` or `github`, same argument convention as `devsys-token`) and consult the matching skill.
 
-Plain `git` (`push`/`fetch`/`pull`) does not need this — the correct credential is already embedded in that repo's remote URL.
+Plain `git` (`push`/`fetch`/`pull`) does not need this — the correct credential is already embedded in that repo's remote URL, whichever remote you're using (`git push mirror main` just works). `devsys-token`/`devsys-platform` only need a second argument when a repo has more than one remote and you're deliberately targeting `glab`/`gh` at a non-default one: `GH_TOKEN=$(devsys-token . release-mirror) gh release create --repo owner/mirror-repo`.
 
 ## Default behaviour
 

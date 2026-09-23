@@ -214,3 +214,5 @@ GITLAB_TOKEN=$(devsys-token) glab api <path>
 Example: `GITLAB_TOKEN=$(devsys-token) glab api "projects/:id/pipelines?ref=main&per_page=1"`
 
 **In a multi-repo project, run these from inside the specific repo the command is about** — `devsys-token` resolves the credential for whichever repo the current directory is in. From outside any repo, pass its path instead: `GITLAB_TOKEN=$(devsys-token frontend) glab issue list`.
+
+**A repo can also have more than one remote** (platform migration, a mirror, a fork/upstream pair — `devsys auth` sets these up the same way as a normal remote). `devsys-token`/`devsys-platform` default to `origin`; pass the remote name as a second argument only when you're deliberately targeting `glab`/`gh` at a different one: `GITLAB_TOKEN=$(devsys-token . upstream) glab mr create --repo owner/upstream-repo`. Plain `git push`/`fetch`/`pull` against any remote needs none of this — the credential already travels embedded in that remote's own URL.
