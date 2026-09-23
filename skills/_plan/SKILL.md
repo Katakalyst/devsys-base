@@ -90,7 +90,7 @@ Create issues for genuine gaps. Do not create issues for things that are nice-to
 
 Check if any milestones exist:
 ```
-glab milestone list --state active
+GITLAB_TOKEN=$(devsys-token) glab milestone list --state active
 ```
 
 For each active milestone, check how many of its issues are closed vs open. If a milestone is close to complete (80%+ issues closed), tell the user: "Milestone '<title>' is nearly done — N issues remaining. Want to review what's been built before it closes?"

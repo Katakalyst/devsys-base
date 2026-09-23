@@ -124,43 +124,45 @@ The `/_release` skill handles this after every merge to main. It determines whet
 
 ## Command Reference
 
-`glab` is the tool for all GitLab operations. It reads the GitLab remote from the current git repository automatically — no project ID needed. Run all commands from inside `/root/workspace`.
+`glab` is the tool for all GitLab operations. It reads the GitLab remote from the current git repository automatically — no project ID needed. Run all commands from inside the repo they're about.
+
+**Every command below needs a credential** — a project can have more than one repo, each with its own token, so there is no fixed `GITLAB_TOKEN` that always works. Prefix every command with `GITLAB_TOKEN=$(devsys-token)`, exactly as shown (see `CLAUDE.md`/`AGENTS.md`'s "`glab`/`gh` credentials" section for why).
 
 **Current user**
 ```
-glab api user
+GITLAB_TOKEN=$(devsys-token) glab api user
 ```
 
 **List open issues**
 ```
-glab issue list --state opened
+GITLAB_TOKEN=$(devsys-token) glab issue list --state opened
 ```
 
 **Get a single issue**
 ```
-glab issue view <iid>
+GITLAB_TOKEN=$(devsys-token) glab issue view <iid>
 ```
 
 **Create an issue**
 ```
-glab issue create --title "..." --description "..."
+GITLAB_TOKEN=$(devsys-token) glab issue create --title "..." --description "..."
 ```
 
 **Update an issue (assign, label, close)**
 ```
-glab issue update <iid> --assignee @me
-glab issue update <iid> --label "in-progress"
-glab issue update <iid> --state close
+GITLAB_TOKEN=$(devsys-token) glab issue update <iid> --assignee @me
+GITLAB_TOKEN=$(devsys-token) glab issue update <iid> --label "in-progress"
+GITLAB_TOKEN=$(devsys-token) glab issue update <iid> --state close
 ```
 
 **Comment on an issue**
 ```
-glab issue note <iid> --message "..."
+GITLAB_TOKEN=$(devsys-token) glab issue note <iid> --message "..."
 ```
 
 **Create an MR**
 ```
-glab mr create \
+GITLAB_TOKEN=$(devsys-token) glab mr create \
   --source-branch <branch> \
   --target-branch main \
   --title "feat: my feature" \
@@ -172,41 +174,43 @@ glab mr create \
 
 **List open MRs**
 ```
-glab mr list --state opened
+GITLAB_TOKEN=$(devsys-token) glab mr list --state opened
 ```
 
 **View an MR**
 ```
-glab mr view <mr_iid>
+GITLAB_TOKEN=$(devsys-token) glab mr view <mr_iid>
 ```
 
 **Merge an MR**
 ```
-glab mr merge <mr_iid>
+GITLAB_TOKEN=$(devsys-token) glab mr merge <mr_iid>
 ```
 
 **CI pipeline status for the current branch**
 ```
-glab ci status
+GITLAB_TOKEN=$(devsys-token) glab ci status
 ```
 
 **View job logs**
 ```
-glab ci view
+GITLAB_TOKEN=$(devsys-token) glab ci view
 ```
 
 **List active milestones**
 ```
-glab milestone list --state active
+GITLAB_TOKEN=$(devsys-token) glab milestone list --state active
 ```
 
 **Create a release**
 ```
-glab release create <tag> --name "<tag>" --notes "<changelog markdown>"
+GITLAB_TOKEN=$(devsys-token) glab release create <tag> --name "<tag>" --notes "<changelog markdown>"
 ```
 
 **Arbitrary API calls (for anything not covered above)**
 ```
-glab api <path>
+GITLAB_TOKEN=$(devsys-token) glab api <path>
 ```
-Example: `glab api "projects/:id/pipelines?ref=main&per_page=1"`
+Example: `GITLAB_TOKEN=$(devsys-token) glab api "projects/:id/pipelines?ref=main&per_page=1"`
+
+**In a multi-repo project, run these from inside the specific repo the command is about** — `devsys-token` resolves the credential for whichever repo the current directory is in. From outside any repo, pass its path instead: `GITLAB_TOKEN=$(devsys-token frontend) glab issue list`.

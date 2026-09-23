@@ -36,13 +36,13 @@ Understand what has been done recently. If there are open branches, note them.
 
 **5. Review the full issue backlog**
 ```
-glab issue list --state opened
+GITLAB_TOKEN=$(devsys-token) glab issue list --state opened
 ```
 Read every open issue. Note which are blocked, which reference a spec, which are already assigned.
 
 **6. Check for open MRs**
 ```
-glab mr list --state opened
+GITLAB_TOKEN=$(devsys-token) glab mr list --state opened
 ```
 If an MR is open from a previous session: check its CI status. If CI passed and it was not merged, merge it first. If CI failed, fix it first.
 
@@ -75,7 +75,7 @@ Read `${CLAUDE_SKILL_DIR}/SKILL.md` in full before each iteration.
 
 Fetch open issues:
 ```
-glab issue list --state opened --assignee none
+GITLAB_TOKEN=$(devsys-token) glab issue list --state opened --assignee none
 ```
 
 Pick the first unassigned issue following the order `/_plan` produced. If all open issues are already assigned to you from a previous session, pick the oldest one.
@@ -84,7 +84,7 @@ If there are no open issues: stop. Tell the user all issues are done and list wh
 
 Assign the issue to yourself and add the label `in-progress`:
 ```
-glab issue update <iid> --assignee @me --label "in-progress"
+GITLAB_TOKEN=$(devsys-token) glab issue update <iid> --assignee @me --label "in-progress"
 ```
 
 Tell the user: "Working on #N — <title>"
@@ -144,7 +144,7 @@ Run `/_scan`. Fix any CRITICAL findings before continuing. Note HIGH findings in
 
 Push the branch and create the MR:
 ```
-glab mr create \
+GITLAB_TOKEN=$(devsys-token) glab mr create \
   --source-branch <branch> \
   --target-branch main \
   --title "<conventional commit title>" \
@@ -166,9 +166,9 @@ Update `work-state/current.md` step to `waiting-ci`. Commit and push.
 
 Check CI status:
 ```
-glab ci status
+GITLAB_TOKEN=$(devsys-token) glab ci status
 ```
-If still running, check again before proceeding to Step 9. If CI passes: proceed. If CI fails: view the job log with `glab ci view`, fix the failure, push again. If you cannot fix it after two attempts, stop and tell the user what is failing and why.
+If still running, check again before proceeding to Step 9. If CI passes: proceed. If CI fails: view the job log with `GITLAB_TOKEN=$(devsys-token) glab ci view`, fix the failure, push again. If you cannot fix it after two attempts, stop and tell the user what is failing and why.
 
 ### Step 9 — Review and merge
 
@@ -200,7 +200,7 @@ If any issue is found: fix it on the branch, push, and let CI re-run before merg
 
 If satisfied, merge:
 ```
-glab mr merge <mr_iid>
+GITLAB_TOKEN=$(devsys-token) glab mr merge <mr_iid>
 ```
 
 Tell the user: "Done: #N — <title>"

@@ -57,6 +57,9 @@ COPY AGENTS.md /opt/devsys/AGENTS.md
 COPY watchdog.sh /usr/local/bin/watchdog
 RUN chmod +x /usr/local/bin/watchdog
 
+COPY devsys-token.sh /usr/local/bin/devsys-token
+RUN chmod +x /usr/local/bin/devsys-token
+
 ENV SHELL=/bin/bash
 WORKDIR /root/workspace
 CMD ["/usr/local/bin/watchdog"]

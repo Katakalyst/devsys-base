@@ -75,7 +75,7 @@ git push origin X.Y.Z
 Generate the release notes as markdown — the same content that would go into a changelog entry. Clean up commit messages into readable sentences; do not paste them verbatim.
 
 ```
-glab release create X.Y.Z \
+GITLAB_TOKEN=$(devsys-token) glab release create X.Y.Z \
   --name "X.Y.Z" \
   --notes "## What changed
 
@@ -154,11 +154,11 @@ Follow step 8 of the normal release flow.
 Open an MR from the hotfix branch to main and merge it:
 
 ```
-glab mr create \
+GITLAB_TOKEN=$(devsys-token) glab mr create \
   --source-branch hotfix/<description> \
   --target-branch main \
   --title "chore: merge hotfix <description> back to main" \
   --description "Brings hotfix X.Y.Z changes back into main." \
   --remove-source-branch
-glab mr merge <mr_iid>
+GITLAB_TOKEN=$(devsys-token) glab mr merge <mr_iid>
 ```
