@@ -3,7 +3,7 @@ name: _github
 ---
 # GitHub
 
-How GitHub is used in this system for a repo hosted there — what each feature means, how to work with it, conventions, and the full API reference. This mirrors `_gitlab`'s skill exactly in structure and intent; consult whichever one matches the platform the repo you're working in is actually on (check with `git remote get-url origin` if unsure — a GitHub remote's host is `github.com`).
+How GitHub is used in this system for a repo hosted there — what each feature means, how to work with it, conventions, and the full API reference. This mirrors `_gitlab`'s skill exactly in structure and intent; consult whichever one matches the platform the repo you're working in is actually on (run `devsys-platform` if unsure — prints `gitlab` or `github`).
 
 ---
 

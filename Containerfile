@@ -63,8 +63,10 @@ COPY AGENTS.md /opt/devsys/AGENTS.md
 COPY watchdog.sh /usr/local/bin/watchdog
 RUN chmod +x /usr/local/bin/watchdog
 
+COPY devsys-git-remote.sh /usr/local/bin/devsys-git-remote.sh
 COPY devsys-token.sh /usr/local/bin/devsys-token
-RUN chmod +x /usr/local/bin/devsys-token
+COPY devsys-platform.sh /usr/local/bin/devsys-platform
+RUN chmod +x /usr/local/bin/devsys-token /usr/local/bin/devsys-platform
 
 ENV SHELL=/bin/bash
 WORKDIR /root/workspace

@@ -18,39 +18,18 @@
 # It does not need to know the exact project name: this container only
 # ever has one project's secrets mounted, so matching on the repo-id
 # suffix alone is unambiguous.
+#
+# See also: devsys-platform, which answers "gitlab or github?" for the same
+# repo using the identical URL-parsing logic (devsys-git-remote.sh) — the
+# two can never disagree on what repo you're actually in.
 set -eu
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+. "$SCRIPT_DIR/devsys-git-remote.sh"
 
 REPO_PATH="${1:-.}"
 
-REMOTE_URL=$(git -C "$REPO_PATH" remote get-url origin 2>/dev/null) || {
-    echo "devsys-token: no 'origin' remote in $REPO_PATH" >&2
-    exit 1
-}
-
-# Derive the repo-id the same way devsys itself does (Git Remote &
-# Credential Spec §7): the owner/repo path after the host, with "/" turned
-# into "-". Handles SCP-style SSH (git@host:owner/repo.git) and any
-# scheme://[user@]host/owner/repo(.git) form (HTTPS, HTTPS with an embedded
-# token, ssh://).
-case "$REMOTE_URL" in
-    git@*)
-        REPO_PATH_PART=${REMOTE_URL#*:}
-        ;;
-    *://*)
-        REPO_PATH_PART=$(printf '%s\n' "$REMOTE_URL" | sed -E 's#^[a-zA-Z][a-zA-Z0-9+.-]*://([^/@]*@)?[^/]+/##')
-        ;;
-    *)
-        echo "devsys-token: cannot parse remote URL: $REMOTE_URL" >&2
-        exit 1
-        ;;
-esac
-REPO_PATH_PART=${REPO_PATH_PART%.git}
-REPO_ID=$(printf '%s\n' "$REPO_PATH_PART" | tr '/' '-')
-
-if [ -z "$REPO_ID" ]; then
-    echo "devsys-token: could not derive a repo id from $REMOTE_URL" >&2
-    exit 1
-fi
+REMOTE_URL=$(devsys_remote_url "$REPO_PATH")
+REPO_ID=$(devsys_repo_id "$REMOTE_URL")
 
 TOKEN_FILE=$(ls /run/secrets/*-"$REPO_ID"-gitlab-token /run/secrets/*-"$REPO_ID"-github-token 2>/dev/null | head -1)
 

@@ -3,7 +3,7 @@ name: _gitlab
 ---
 # GitLab
 
-How GitLab is used in this system — what each feature means, how to work with it, conventions, and the full API reference.
+How GitLab is used in this system — what each feature means, how to work with it, conventions, and the full API reference. If a repo turns out to be on GitHub instead, see `_github`'s skill (run `devsys-platform` if unsure which one applies).
 
 ---
 
