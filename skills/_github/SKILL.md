@@ -45,7 +45,7 @@ Do not invent new labels. Keep it simple.
 4. Issue auto-closes when the PR merges — done
 
 **Milestones**
-Use milestones to group issues that belong to the same release or feature set, the same as on GitLab. **Real platform gap, not glossed over: `gh` has no built-in command to list or manage milestones** (an open, unimplemented feature request — `cli/cli#1200`). Listing them requires the raw API: `GH_TOKEN=$(devsys-token) gh api repos/:owner/:repo/milestones?state=open`. `gh issue list --milestone "<name>"` can filter issues by a milestone you already know the name of, but nothing lists the milestones themselves. If the user defines a milestone (e.g. "v1.0"), assign issues to it via the GitHub web UI or `gh api` — do not create milestones yourself unless the user asks.
+Use milestones to group issues that belong to the same release or feature set, the same as on GitLab. **Real platform gap, not glossed over: core `gh` has no built-in command to list or manage milestones.** The feature request for one (`cli/cli#1200`) was closed by GitHub CLI's own maintainers, labeled `extension-idea` — pointed toward a third-party extension (`gh-milestone`) instead of building it in. Not something to add a dependency on for this system; use the raw API directly instead: `GH_TOKEN=$(devsys-token) gh api repos/{owner}/{repo}/milestones?state=open`. `gh issue list --milestone "<name>"` can filter issues by a milestone you already know the name of, but nothing lists the milestones themselves. If the user defines a milestone (e.g. "v1.0"), assign issues to it via the GitHub web UI or `gh api` — do not create milestones yourself unless the user asks.
 
 **When an issue is too large**
 If during implementation you discover an issue is larger than expected, do not expand scope silently. Implement the core requirement, create follow-up issues for the rest, and reference them in the original issue's comments.
@@ -93,8 +93,11 @@ Runs the project's test suite. Nothing else — Trivy and Semgrep run locally be
 - Any `pending` — wait for it to finish before merging
 
 **When a check fails**
-1. Find the failing run: `gh pr checks <number>` names it, or `gh run list` for recent runs
-2. View the log for just the failed steps: `gh run view --log-failed` (add `--job <id>` to target one job specifically)
+1. Get the current branch's most recent run's ID — **`gh run view` with no ID prompts interactively for you to pick one; that hangs a non-interactive session, so always resolve the ID explicitly first:**
+   ```
+   RUN_ID=$(GH_TOKEN=$(devsys-token) gh run list --branch <branch> --limit 1 --json databaseId --jq '.[0].databaseId')
+   ```
+2. View the log for just the failed steps: `GH_TOKEN=$(devsys-token) gh run view "$RUN_ID" --log-failed`
 3. Read the error — understand what failed and why
 4. Fix it on the branch and push again
 5. If you cannot fix it after two attempts, stop and tell the user
@@ -197,14 +200,15 @@ GH_TOKEN=$(devsys-token) gh pr merge <number> --merge --delete-branch
 GH_TOKEN=$(devsys-token) gh pr checks <number>
 ```
 
-**View logs for failed steps in the most recent run**
+**View logs for failed steps in a branch's most recent run** (`gh run view` alone prompts interactively for which run — resolve the ID first so this never hangs non-interactively)
 ```
-GH_TOKEN=$(devsys-token) gh run view --log-failed
+RUN_ID=$(GH_TOKEN=$(devsys-token) gh run list --branch <branch> --limit 1 --json databaseId --jq '.[0].databaseId')
+GH_TOKEN=$(devsys-token) gh run view "$RUN_ID" --log-failed
 ```
 
 **List milestones (no native subcommand — see Issues above)**
 ```
-GH_TOKEN=$(devsys-token) gh api repos/:owner/:repo/milestones?state=open
+GH_TOKEN=$(devsys-token) gh api repos/{owner}/{repo}/milestones?state=open
 ```
 
 **Create a release**
@@ -216,6 +220,6 @@ GH_TOKEN=$(devsys-token) gh release create <tag> --title "<tag>" --notes "<chang
 ```
 GH_TOKEN=$(devsys-token) gh api <path>
 ```
-Example: `GH_TOKEN=$(devsys-token) gh api "repos/:owner/:repo/actions/runs?per_page=1"`
+Example: `GH_TOKEN=$(devsys-token) gh api "repos/{owner}/{repo}/actions/runs?per_page=1"`
 
 **In a multi-repo project, run these from inside the specific repo the command is about** — `devsys-token` resolves the credential for whichever repo the current directory is in. From outside any repo, pass its path instead: `GH_TOKEN=$(devsys-token frontend) gh issue list`.
