@@ -217,7 +217,7 @@ Update `work-state/current.md` step to `waiting-feedback`. Commit and push.
 
 Tell the user: "Done: #N — <title>. Say something if you want to review it first — otherwise I'll continue in 5 minutes."
 
-Schedule a one-shot cron 5 minutes out with the prompt: "Resume `/work` from `work-state/current.md`."
+Schedule a one-shot cron 5 minutes out with the prompt: "Resume `/work` from `work-state/current.md`." (see `CLAUDE.md`/`AGENTS.md`'s "Continuing without the user" section for why this step, specifically the cron, is what makes the 5 minutes real.)
 
 If the user responds before it fires, handle their feedback first and cancel the scheduled cron. If feedback is a bug, fix it on a new branch immediately. If feedback changes requirements, run `/talk` to capture it properly, then continue.
 

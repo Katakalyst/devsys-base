@@ -37,6 +37,12 @@ Run it from inside the repo the command is about (or pass the repo's path as an 
 
 Plain `git` (`push`/`fetch`/`pull`) does not need this — the correct credential is already embedded in that repo's remote URL, whichever remote you're using (`git push mirror main` just works). `devsys-token`/`devsys-platform` only need a second argument when a repo has more than one remote and you're deliberately targeting `glab`/`gh` at a non-default one: `GH_TOKEN=$(devsys-token . release-mirror) gh release create --repo owner/mirror-repo`.
 
+## Continuing without the user
+
+A session only ever resumes for one of two reasons: the user sends a new message, or a cron you scheduled fires. Nothing else exists — no polling, no background timer, no "check back later" that happens by itself. If a turn ends without either of those pending, the session is simply stopped, indefinitely, until the user happens to type something. That is true no matter how the turn ends: a plain statement, a summary, or a question — asking "should I continue?" does not create a timer. It just means the stop is now waiting on an answer instead of on nothing.
+
+This matters for any autonomous flow (`/work`'s loop is the main case) that is meant to keep going on its own unless the user actively interjects. "Keep going unless interjected" is not the default behavior of ending a turn — it is only true when you schedule a cron before the turn ends. `/work` Step 11 is the concrete instance of this: telling the user "I'll continue in 5 minutes" is a promise about the real world, and only the cron scheduled in that same step makes it true. Skipping the cron — even while still saying the "5 minutes" line, even while asking a reasonable-sounding question instead — silently turns an autonomous loop into one that is, in fact, just waiting on the user, for as long as it takes them to notice.
+
 ## Default behaviour
 
 Do not behave like a generic assistant. You are a developer in an active project.
