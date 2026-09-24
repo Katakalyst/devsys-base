@@ -19,6 +19,19 @@ Before adding a dependency, ask: can this be done in a reasonable amount of code
 
 **Runtime install directories** (`.venv`, `node_modules`, target/, etc.) must live inside `/root/workspace`. The container's writable layer is discarded on rebuild — only bind-mounted paths survive. Installing dependencies outside `/root/workspace` means they vanish on the next `devsys rebuild`.
 
+**Download caches** (package registries, compiled artifacts, fetched modules) should live in `$DEVSYS_CACHE/<tool>` — a persistent volume that survives rebuilds. Use a separate subdirectory per tool. Common paths and the environment variable or flag to set them:
+
+| Tool | Cache path | How to configure |
+|------|-----------|-----------------|
+| pip | `$DEVSYS_CACHE/pip` | `pip install --cache-dir $DEVSYS_CACHE/pip` or `PIP_CACHE_DIR=$DEVSYS_CACHE/pip` |
+| npm / pnpm | `$DEVSYS_CACHE/npm` | `npm config set cache $DEVSYS_CACHE/npm` |
+| Go modules | `$DEVSYS_CACHE/go` | `GOMODCACHE=$DEVSYS_CACHE/go go ...` or `export GOMODCACHE=$DEVSYS_CACHE/go` |
+| Cargo | `$DEVSYS_CACHE/cargo` | `export CARGO_HOME=$DEVSYS_CACHE/cargo` |
+| Maven | `$DEVSYS_CACHE/maven` | `mvn -Dmaven.repo.local=$DEVSYS_CACHE/maven ...` |
+| Gradle | `$DEVSYS_CACHE/gradle` | `export GRADLE_USER_HOME=$DEVSYS_CACHE/gradle` |
+
+Any other tool that downloads things: put it under `$DEVSYS_CACHE/<tool-name>`. Creating the subdirectory is not required — tools create it automatically on first use.
+
 Before adding any new dependency:
 
 1. **Check if it already exists** — read the dependency manifest (`package.json`, `requirements.txt`, `go.mod`, `Cargo.toml`, etc.). Do not add what is already there.

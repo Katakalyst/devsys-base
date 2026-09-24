@@ -24,6 +24,13 @@ Use these skills — they define how work gets done in this system.
 
 When the user starts a session, one of these three is almost always what they want. If it is not clear which, ask: "Do you want me to continue working, talk through something, or investigate a bug?"
 
+## Persistent paths
+
+Two paths survive `devsys rebuild`; everything else in the container's writable layer is discarded:
+
+- `/root/workspace` — the project source tree (bind-mounted from the host). Put runtime install directories here (`.venv`, `node_modules`, etc.).
+- `/root/cache` (also `$DEVSYS_CACHE`) — download cache volume. Give each tool its own subdirectory: `$DEVSYS_CACHE/pip`, `$DEVSYS_CACHE/npm`, `$DEVSYS_CACHE/go`, etc. See the `/_dependencies` skill for the exact flag or env var per tool.
+
 ## CI/CD pipelines — forbidden
 
 Do not use GitLab CI/CD pipelines or GitHub Actions. Do not create, trigger, or wait on pipeline runs. Do not add `.gitlab-ci.yml`, `github/workflows/*.yml`, or any other CI configuration file to a project. Do not run `glab ci`, `gh run`, `gh workflow`, or any command that interacts with a CI system.
