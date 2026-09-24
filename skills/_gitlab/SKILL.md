@@ -14,7 +14,6 @@ GitLab is the single source of truth for all project activity. It holds:
 - What is being done (assigned issues, open MRs)
 - What was done (closed issues, merged MRs, releases)
 - The code itself (repository)
-- Verification that the code works (CI pipelines)
 - What was shipped (releases, tags)
 
 If something is not in GitLab, it did not happen.
@@ -63,7 +62,6 @@ An MR is the gate between a branch and main. Nothing goes to main without one.
   - What the change does, briefly
   - How to verify it works (steps to test)
 - Always set `remove_source_branch: true` — clean up after merge
-- Never merge without CI passing
 
 **Reviewing your own MR**
 Before merging, check:
@@ -76,28 +74,6 @@ If any answer is no, fix it before merging.
 
 **Draft MRs**
 If you need to push a branch but it is not ready to merge, prefix the title with `Draft:`. Remove the prefix when it is ready.
-
----
-
-## CI Pipelines
-
-The CI pipeline runs automatically on every push. It is the final check before merging.
-
-**What CI does in this system**
-Runs the project's test suite. Nothing else — Trivy and Semgrep run locally before push, not in CI.
-
-**Reading pipeline results**
-- `success` — tests pass, safe to merge
-- `failed` — tests failed, do not merge. Fetch the job log and fix the failure before pushing again.
-- `running` — wait for it to finish before merging
-
-**When CI fails**
-1. Fetch the failing job log
-2. Read the error — understand what failed and why
-3. Fix it on the branch and push again
-4. If you cannot fix it after two attempts, stop and tell the user
-
-Never merge a failing pipeline. Never skip CI.
 
 ---
 
@@ -185,16 +161,6 @@ GITLAB_TOKEN=$(devsys-token) glab mr view <mr_iid>
 **Merge an MR**
 ```
 GITLAB_TOKEN=$(devsys-token) glab mr merge <mr_iid>
-```
-
-**CI pipeline status for the current branch**
-```
-GITLAB_TOKEN=$(devsys-token) glab ci status
-```
-
-**View job logs**
-```
-GITLAB_TOKEN=$(devsys-token) glab ci view
 ```
 
 **List active milestones**

@@ -7,7 +7,7 @@ The core autonomous development loop. Pick up the next open issue, implement it,
 
 The user starts this skill. After that, proceed autonomously; pause only when a stop condition is met.
 
-**Platform note:** the commands below use `glab` (GitLab). If the repo you're working in is hosted on GitHub instead (run `devsys-platform` if unsure), use the equivalent `gh` command at each step — see `_github`'s skill for the exact mapping (`gh issue`/`gh pr`/`gh run` cover what `glab issue`/`glab mr`/`glab ci` do here). Either way, prefix the command with its token — see `_gitlab`'s or `_github`'s skill for why.
+**Platform note:** the commands below use `glab` (GitLab). If the repo you're working in is hosted on GitHub instead (run `devsys-platform` if unsure), use the equivalent `gh` command at each step — see `_github`'s skill for the exact mapping (`gh issue`/`gh pr` cover what `glab issue`/`glab mr` do here). Either way, prefix the command with its token — see `_gitlab`'s or `_github`'s skill for why.
 
 ---
 
@@ -46,7 +46,7 @@ Read every open issue. Note which are blocked, which reference a spec, which are
 ```
 GITLAB_TOKEN=$(devsys-token) glab mr list --state opened
 ```
-If an MR is open from a previous session: check its CI status. If CI passed and it was not merged, merge it first. If CI failed, fix it first.
+If an MR is open from a previous session: review it (same checklist as Step 9 below) and merge it before starting new work.
 
 After completing all steps, run `/_plan`. It will review the backlog, fix any issues with it, and produce the order in which to work. Only after `/_plan` completes should you begin the loop.
 
@@ -162,17 +162,7 @@ GITLAB_TOKEN=$(devsys-token) glab mr create \
 
 Update `work-state/current.md` step to `mr-open`. Commit and push.
 
-### Step 8 — Wait for CI
-
-Update `work-state/current.md` step to `waiting-ci`. Commit and push.
-
-Check CI status:
-```
-GITLAB_TOKEN=$(devsys-token) glab ci status
-```
-If still running, check again before proceeding to Step 9. If CI passes: proceed. If CI fails: view the job log with `GITLAB_TOKEN=$(devsys-token) glab ci view`, fix the failure, push again. If you cannot fix it after two attempts, stop and tell the user what is failing and why.
-
-### Step 9 — Review and merge
+### Step 8 — Review and merge
 
 Read the full diff. Review it as if you were a second developer who did not write this code.
 
@@ -198,7 +188,7 @@ Read the full diff. Review it as if you were a second developer who did not writ
 - Does the code follow the conventions in `CLAUDE.md` and the rest of the codebase?
 - Are naming, structure, and patterns consistent with what already exists?
 
-If any issue is found: fix it on the branch, push, and let CI re-run before merging. Do not merge code you would not approve from someone else.
+If any issue is found: fix it on the branch, push, then re-read the diff before merging. Do not merge code you would not approve from someone else.
 
 If satisfied, merge:
 ```
@@ -279,7 +269,6 @@ One short paragraph. Then stop.
 |-----------|----------------------|
 | No more open issues | List what was completed this session |
 | Issue too vague to implement | "Issue #N is blocked — I need: ..." |
-| CI failing after two attempts | "CI is failing on branch X. Error: ..." |
 | Release ready | `/_release` asks the user — wait for their response |
 | Product decision needed | "I need your input on #N: ..." |
 | Critical scan finding blocks scope | "Critical vulnerability in [dep]. Fix requires [change]. Confirm?" |
@@ -308,4 +297,4 @@ step: <step>
 <condensed notes from step 2 — what this issue requires and how to implement it>
 ```
 
-Valid step values: `understand`, `implement`, `test`, `scan`, `mr-open`, `waiting-ci`, `waiting-feedback`
+Valid step values: `understand`, `implement`, `test`, `scan`, `mr-open`, `waiting-feedback`

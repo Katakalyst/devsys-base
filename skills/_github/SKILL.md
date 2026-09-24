@@ -14,7 +14,6 @@ For any repo hosted on GitHub, GitHub is the single source of truth for that rep
 - What is being done (assigned issues, open pull requests)
 - What was done (closed issues, merged pull requests, releases)
 - The code itself (repository)
-- Verification that the code works (Actions workflow runs)
 - What was shipped (releases, tags)
 
 If something is not in GitHub, it did not happen — same rule as GitLab, just enforced on this platform's record instead.
@@ -63,7 +62,6 @@ A PR is the gate between a branch and main — GitHub's name for what GitLab cal
   - What the change does, briefly
   - How to verify it works (steps to test)
 - **Platform difference from GitLab, worth being precise about: `gh pr create` has no flag to remove the source branch at create time** (unlike `glab mr create --remove-source-branch`). Branch deletion on this platform happens at merge time instead: `gh pr merge <number> --delete-branch`. Don't look for a create-time equivalent — there isn't one.
-- Never merge without CI passing
 
 **Reviewing your own PR**
 Before merging, check:
@@ -76,33 +74,6 @@ If any answer is no, fix it before merging.
 
 **Draft PRs**
 If you need to push a branch but it is not ready to merge, create it as a draft: `gh pr create --draft`. Mark it ready when it is: `gh pr ready <number>`.
-
----
-
-## GitHub Actions
-
-Actions run automatically on every push — GitHub's name for what GitLab calls CI pipelines. It is the final check before merging.
-
-**What Actions does in this system**
-Runs the project's test suite. Nothing else — Trivy and Semgrep run locally before push, not in CI.
-
-**Reading check results**
-`gh pr checks <number>` reports each check's `bucket`: `pass`, `fail`, `pending`, `skipping`, or `cancel`.
-- All `pass` — safe to merge
-- Any `fail` — do not merge. View the failing run's log and fix the failure before pushing again.
-- Any `pending` — wait for it to finish before merging
-
-**When a check fails**
-1. Get the current branch's most recent run's ID — **`gh run view` with no ID prompts interactively for you to pick one; that hangs a non-interactive session, so always resolve the ID explicitly first:**
-   ```
-   RUN_ID=$(GH_TOKEN=$(devsys-token) gh run list --branch <branch> --limit 1 --json databaseId --jq '.[0].databaseId')
-   ```
-2. View the log for just the failed steps: `GH_TOKEN=$(devsys-token) gh run view "$RUN_ID" --log-failed`
-3. Read the error — understand what failed and why
-4. Fix it on the branch and push again
-5. If you cannot fix it after two attempts, stop and tell the user
-
-Never merge a failing check. Never skip it.
 
 ---
 
@@ -193,17 +164,6 @@ GH_TOKEN=$(devsys-token) gh pr view <number>
 **Merge a PR (and delete the branch — no create-time equivalent on this platform, see Pull Requests above)**
 ```
 GH_TOKEN=$(devsys-token) gh pr merge <number> --merge --delete-branch
-```
-
-**Checks status for a PR**
-```
-GH_TOKEN=$(devsys-token) gh pr checks <number>
-```
-
-**View logs for failed steps in a branch's most recent run** (`gh run view` alone prompts interactively for which run — resolve the ID first so this never hangs non-interactively)
-```
-RUN_ID=$(GH_TOKEN=$(devsys-token) gh run list --branch <branch> --limit 1 --json databaseId --jq '.[0].databaseId')
-GH_TOKEN=$(devsys-token) gh run view "$RUN_ID" --log-failed
 ```
 
 **List milestones (no native subcommand — see Issues above)**

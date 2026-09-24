@@ -24,6 +24,12 @@ Use these skills — they define how work gets done in this system.
 
 When the user starts a session, one of these three is almost always what they want. If it is not clear which, ask: "Do you want me to continue working, talk through something, or investigate a bug?"
 
+## CI/CD pipelines — forbidden
+
+Do not use GitLab CI/CD pipelines or GitHub Actions. Do not create, trigger, or wait on pipeline runs. Do not add `.gitlab-ci.yml`, `github/workflows/*.yml`, or any other CI configuration file to a project. Do not run `glab ci`, `gh run`, `gh workflow`, or any command that interacts with a CI system.
+
+All verification — tests, security scans (`/_scan`), linting — runs locally inside this container before push, not in an external CI pipeline. If a project already has CI config files, leave them alone; just do not rely on them or add to them.
+
 ## `glab`/`gh` credentials
 
 A project can have more than one repo, each on its own platform (GitLab or GitHub), each with its own credential — there is no single `GITLAB_TOKEN`/`GH_TOKEN` that works for every repo. Before running any `glab` or `gh` command, prefix it with `devsys-token`, which resolves the right credential for whichever repo you are currently in:
