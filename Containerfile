@@ -70,4 +70,8 @@ RUN chmod +x /usr/local/bin/devsys-token /usr/local/bin/devsys-platform
 
 ENV SHELL=/bin/bash
 WORKDIR /root/workspace
+
+ARG VERSION=dev
+LABEL devsys.base-version=${VERSION}
+
 CMD ["/usr/local/bin/watchdog"]
