@@ -3,7 +3,7 @@ name: _release
 ---
 # /release
 
-Called by `/work` after every merge to main. Determines whether a release is warranted, and if so asks the user for approval before creating one.
+Called by `/work` after every merge to main. Determines whether a release is warranted, and if so cuts it — on its own judgment, without waiting for the user. Release cutting must never block the work loop. Every release cut this way is logged to a pending-announcements file and surfaced the next time the user is actually present, rather than interrupting the loop to ask permission per release (see "Reporting to the user" below).
 
 **Platform note:** commands below use `glab` (GitLab). For a GitHub-hosted repo, use the `gh` equivalent — see `_github`'s skill (its `gh pr create` has no create-time "remove source branch" flag, unlike `glab mr create` — that happens at merge time instead: `gh pr merge --delete-branch`).
 
@@ -45,17 +45,16 @@ If there are no `feat` or `fix` commits — do not release. Tell the user: "No r
 
 Calculate the new version by applying the bump to the last tag (or `0.0.0`).
 
-### 5. Ask the user for approval
+### 5. Proceed — do not ask for approval
 
-Tell the user the proposed release and why. Wait for their response before continuing.
+Do not stop and ask the user before cutting the release. Step 3 already decided a release is warranted and Step 4 already determined the bump — that is the judgment call, and it belongs to the agent, same as every other technical decision. Waiting for a synchronous yes/no here is exactly what turns `/work` from an autonomous loop into one that silently blocks on the user being present, which defeats the point of `/work`.
 
-**For MINOR or PATCH:**
-> "Ready to release vX.Y.Z (MINOR — 2 new features, 1 bug fix). Shall I proceed?"
+Write down the one-line reason you'll use later when this gets reported (mirrors the old approval message, just not sent as a question):
 
-**For MAJOR, add the breaking change reason:**
-> "Ready to release vX.Y.Z (MAJOR — breaking change: [reason]). This will signal a breaking change to anyone depending on this project. Shall I proceed?"
+**MINOR or PATCH:** "vX.Y.Z (MINOR — 2 new features, 1 bug fix)"
+**MAJOR:** "vX.Y.Z (MAJOR — breaking change: [reason])"
 
-If the user says no or asks to wait: tell them "Noted, will not release now." Stop here. Do not release until explicitly asked.
+Continue to Step 6.
 
 ### 6. Run a scan
 
@@ -93,15 +92,38 @@ GITLAB_TOKEN=$(devsys-token) glab release create X.Y.Z \
 
 Omit empty sections.
 
-### 9. Report
+### 9. Record it as pending announcement
 
-Tell the user: "Released X.Y.Z — <one line summary of what changed>."
+This step is what replaces the old approval prompt — it's how the release still reaches the user, just not synchronously.
 
 Derive the release URL from the git remote:
 ```
 git remote get-url origin
 ```
-Strip `.git` suffix if present, then append `/-/releases/X.Y.Z`. Include the URL in the report.
+Strip `.git` suffix if present, then append `/-/releases/X.Y.Z`.
+
+Append one line to `.devsys/pending-releases.md` (create it if it doesn't exist) with the version, the one-line reason from Step 5, and the URL:
+```
+- vX.Y.Z (MINOR — 2 new features, 1 bug fix) — https://.../-/releases/X.Y.Z
+```
+
+Commit this alongside the tag work (`docs: record pending release announcement vX.Y.Z`) and push it — treat it the same as any other state that must survive a machine switch, same reasoning as `work-state/`.
+
+If you are also in a position to tell the user something right now anyway (not blocking on it, just already talking to them), mention it in passing: "Released vX.Y.Z — <summary>." That's a courtesy, not the mechanism — `.devsys/pending-releases.md` is what guarantees it eventually gets surfaced even if no one's reading this session live.
+
+---
+
+## Reporting to the user
+
+`/_release` itself never waits for the user. Instead, whenever `/work` is about to address the user at a point where they're actually likely to be present — not a cron-driven auto-continue — that's when pending releases get surfaced and cleared:
+
+- The user responds to a Step 11 "Done: #N" message (a real reply, not the cron firing)
+- Session end, for any reason (all done, blocker, or the user ending the session)
+- The greeting at the start of a new session (Phase 1), if `.devsys/pending-releases.md` exists
+
+At that point: read `.devsys/pending-releases.md`. If it has entries, list them for the user — "Also shipped since you were last around: vX.Y.Z (...), vX.Y.Z (...)." Then clear the file (or delete it if empty afterward) and commit that.
+
+Do not clear it just because `/_release` itself ran — clearing means "the user has now seen this," and a cron-driven loop iteration doesn't mean anyone saw anything.
 
 ---
 

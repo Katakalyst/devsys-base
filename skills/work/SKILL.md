@@ -13,7 +13,11 @@ The user starts this skill. After that, proceed autonomously; pause only when a 
 
 ## Session start
 
-At the start of every session, greet the user briefly: tell them what project you are on and what you are about to do. One or two sentences. Then begin orientation.
+At the start of every session, greet the user briefly: tell them what project you are on and what you are about to do. One or two sentences.
+
+If `.devsys/pending-releases.md` exists and has entries, this is a point where the user is genuinely present — include them in the greeting ("Also, shipped vX.Y.Z and vX.Y.Z while you were away") and clear the file (commit the clear) per `_release`'s "Reporting to the user".
+
+Then begin orientation.
 
 ---
 
@@ -199,17 +203,21 @@ Tell the user: "Done: #N — <title>"
 
 ### Step 10 — Release
 
-Run `/_release`. It reads commits since the last tag, determines whether a release is warranted, and asks the user for approval before proceeding.
+Run `/_release`. It reads commits since the last tag, determines whether a release is warranted, and — on its own judgment, without asking — cuts it if so. This never blocks the loop; see `_release`'s "Reporting to the user" for how the release still reaches the user later instead of gating progress now.
 
 ### Step 11 — User feedback
 
 Update `work-state/current.md` step to `waiting-feedback`. Commit and push.
 
-Tell the user: "Done: #N — <title>. Say something if you want to review it first — otherwise I'll continue in 5 minutes."
+Check for `.devsys/pending-releases.md`. If it has entries, include them in the message; this is a point where the user might actually be reading, so it's a valid place to surface them (see `_release`'s "Reporting to the user").
+
+Tell the user: "Done: #N — <title>. Say something if you want to review it first — otherwise I'll continue in 5 minutes." Append pending releases if any: "Also shipped since you were last around: vX.Y.Z (...)."
 
 Schedule a one-shot cron 5 minutes out with the prompt: "Resume `/work` from `work-state/current.md`." (see `CLAUDE.md`/`AGENTS.md`'s "Continuing without the user" section for why this step, specifically the cron, is what makes the 5 minutes real.)
 
-If the user responds before it fires, handle their feedback first and cancel the scheduled cron. If feedback is a bug, fix it on a new branch immediately. If feedback changes requirements, run `/talk` to capture it properly, then continue.
+If the user responds before it fires — a real reply, not the cron firing — handle their feedback first, cancel the scheduled cron, and clear `.devsys/pending-releases.md` (commit the clear) since they've now genuinely seen it. If feedback is a bug, fix it on a new branch immediately. If feedback changes requirements, run `/talk` to capture it properly, then continue.
+
+If the cron fires instead of a user reply, do not clear `.devsys/pending-releases.md` — nobody has seen it yet. It carries forward to the next time this step runs, or to Session end.
 
 Delete `work-state/` entirely and commit the deletion to main before proceeding.
 
@@ -256,8 +264,10 @@ Do not silently adapt to verbal requirement changes. Every change to requirement
 
 When stopping — whether all done, blocker hit, or user ends the session — run `/_checkpoint` first. Do not rely on this loop's own per-step commits alone; `/_checkpoint` is what guarantees the workspace is actually committed and pushed regardless of which step things stopped at (see `CLAUDE.md`/`AGENTS.md`'s "Leaving mid-session").
 
+Check `.devsys/pending-releases.md`. The user is definitely present at session end, so this is always a valid point to surface and clear it (commit the clear) if it has entries.
+
 Then give a brief summary:
-- What was completed this session (issues closed, releases made)
+- What was completed this session (issues closed, releases made — including any just surfaced from `.devsys/pending-releases.md`)
 - What is in progress (if anything)
 - What is next
 
@@ -271,9 +281,8 @@ If the user interrupts mid-loop to say they need to leave, do not wait to reach 
 
 | Condition | What to tell the user |
 |-----------|----------------------|
-| No more open issues | List what was completed this session |
+| No more open issues | List what was completed this session, plus any pending releases from `.devsys/pending-releases.md` |
 | Issue too vague to implement | "Issue #N is blocked — I need: ..." |
-| Release ready | `/_release` asks the user — wait for their response |
 | Product decision needed | "I need your input on #N: ..." |
 | Critical scan finding blocks scope | "Critical vulnerability in [dep]. Fix requires [change]. Confirm?" |
 | User ends the session | Give session summary and stop |
