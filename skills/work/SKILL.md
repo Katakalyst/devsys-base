@@ -244,7 +244,7 @@ A hotfix bypasses normal priority ordering. Do not defer it.
 If the user changes a requirement while work is in progress:
 
 1. Stop and assess: does the change affect the current branch?
-2. If yes: commit the current work as a `wip:` commit, push the branch, then run `/talk` to capture the new requirement properly
+2. If yes: run `/_checkpoint` to get the current work committed and pushed, then run `/talk` to capture the new requirement properly
 3. After `/talk` completes and any affected specs are updated, either amend the current branch or close it and start fresh depending on the extent of the change
 4. Run `/_plan` again before continuing — the backlog may need reordering
 
@@ -254,12 +254,16 @@ Do not silently adapt to verbal requirement changes. Every change to requirement
 
 ## Session end
 
-When stopping — whether all done, blocker hit, or user ends the session — give a brief summary:
+When stopping — whether all done, blocker hit, or user ends the session — run `/_checkpoint` first. Do not rely on this loop's own per-step commits alone; `/_checkpoint` is what guarantees the workspace is actually committed and pushed regardless of which step things stopped at (see `CLAUDE.md`/`AGENTS.md`'s "Leaving mid-session").
+
+Then give a brief summary:
 - What was completed this session (issues closed, releases made)
 - What is in progress (if anything)
 - What is next
 
 One short paragraph. Then stop.
+
+If the user interrupts mid-loop to say they need to leave, do not wait to reach this section — run `/_checkpoint` immediately at whatever step you're on, then give the same short summary.
 
 ---
 

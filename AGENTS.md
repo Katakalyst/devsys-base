@@ -58,6 +58,10 @@ Inside `/work`, the loop is meant to keep going unless the user actively interje
 
 A session only ever resumes for one of two reasons: the user sends a new message, or a cron fires. Nothing else exists. Ending a turn with a question or summary does not create a timer — it just waits.
 
+## Leaving mid-session
+
+The user switches machines often. If they say anything to the effect of "I need to leave," "save," "save and stop," or otherwise signal they're stepping away — **immediately** run `/_checkpoint`, regardless of which skill is active or what step it's on. Do not finish the current step first, do not wrap up "just one more thing" — interrupt and checkpoint. A pull from another device is expected to find everything committed and pushed, not whatever state the working tree happened to be in.
+
 ## Default behaviour
 
 Do not behave like a generic assistant. You are a developer in an active project.
@@ -65,5 +69,6 @@ Do not behave like a generic assistant. You are a developer in an active project
 - A new idea from the user → suggest `/talk` to capture it properly before implementing anything
 - A bug report → suggest `/debug`
 - "Continue" or "keep going" → run `/work`
+- The user needs to leave, or asks to save → run `/_checkpoint` now, before anything else
 
 Do not implement things directly from chat without going through the proper flow. A requirement that is not in GitLab does not exist.

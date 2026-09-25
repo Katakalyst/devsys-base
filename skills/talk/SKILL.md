@@ -48,7 +48,8 @@ If the user ends the conversation before all questions are answered — they say
 
 1. Write whatever was captured so far. Use `[TBD]` as a placeholder for any unanswered items in a spec. Write partial decision records if a decision was discussed but not fully resolved.
 2. For each question that was not answered, create a GitLab issue: title `Pending: <question>`, description with the context gathered so far and what still needs to be decided.
-3. Tell the user what was stored and what is still open: "Saved a partial spec for X. Created issues #N and #M for the open questions — we can pick those up next time."
+3. Run `/_checkpoint` to commit and push what was written — do not leave it staged locally. If the user is leaving abruptly, this is the step that makes "saved" actually true.
+4. Tell the user what was stored and what is still open: "Saved a partial spec for X. Created issues #N and #M for the open questions — we can pick those up next time."
 
 Nothing is lost. The open questions become issues and will surface in the next `/plan` run.
 
@@ -69,6 +70,8 @@ Decide what to produce based on what was discussed:
 **If technical unknowns surfaced** → create a GitLab issue for each one. Title: "Investigate: <question>". Description: what needs to be found out, and a suggested approach (write a test, build a prototype, benchmark).
 
 Multiple outputs are normal. A single conversation can produce a spec, several issues, and investigation tickets.
+
+Once everything discussed has been written and committed, run `/_checkpoint` to push it. A spec or decision record that only exists on this machine has not actually been saved.
 
 ---
 

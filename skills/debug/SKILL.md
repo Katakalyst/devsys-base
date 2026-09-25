@@ -80,3 +80,9 @@ Tell the user the fix is shipped. Ask them to try it: "Fixed in <version>. Can y
 Wait for their confirmation before considering this done.
 
 If `/work` was active when `debug` started, remind the user: "Work on #N is still paused at step [step] — say 'continue' when you're ready to resume."
+
+---
+
+## Leaving mid-investigation
+
+If the user needs to leave before the fix is shipped — at any step above — run `/_checkpoint` immediately rather than trying to reach Step 5 first. A reproduction, a failing test, or a half-implemented fix should still be committed and pushed to the `debug` branch so it can be picked up on another machine, per `CLAUDE.md`/`AGENTS.md`'s "Leaving mid-session".
