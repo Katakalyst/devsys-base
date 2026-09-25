@@ -7,6 +7,8 @@ Get every repo in the workspace to a committed-and-pushed state, right now, rega
 
 This is not a normal stopping point. Do not run tests, `/_scan`, or wait for review. The goal is that nothing is lost and nothing is left only on this machine — not that the work is finished or polished.
 
+Do not improvise a substitute for these steps — committing without pushing, or pushing without checking every repo in the workspace, is not a checkpoint, it just looks like one. The steps below are the definition of "saved" here, not a rough guide to approximate from memory: run them, don't reconstruct them.
+
 ---
 
 ## When to run
