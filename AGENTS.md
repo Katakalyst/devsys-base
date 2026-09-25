@@ -29,7 +29,7 @@ When the user starts a session, one of these three is almost always what they wa
 Two paths survive `devsys rebuild`; everything else in the container's writable layer is discarded:
 
 - `/root/workspace` — the project source tree (bind-mounted from the host). Put runtime install directories here (`.venv`, `node_modules`, etc.).
-- `/root/cache` (also `$DEVSYS_CACHE`) — download cache volume. Give each tool its own subdirectory: `$DEVSYS_CACHE/pip`, `$DEVSYS_CACHE/npm`, `$DEVSYS_CACHE/go`, etc. See the `/_dependencies` skill for the exact flag or env var per tool.
+- `/root/.cache` (also `$DEVSYS_CACHE`) — the one download cache volume, at the path tools already expect by convention. Give each tool its own subdirectory: `$DEVSYS_CACHE/pip`, `$DEVSYS_CACHE/npm`, `$DEVSYS_CACHE/go`, etc. — see the `/_dependencies` skill for the exact flag or env var per tool. Trivy's vulnerability DB lives here too, at `$DEVSYS_CACHE/trivy` (`TRIVY_CACHE_DIR`) — it is not a separate volume. If you're ever unsure where a cache belongs, `$DEVSYS_CACHE` is the answer; nothing caches directly under `/root/.cache` itself.
 
 ## CI/CD pipelines — forbidden
 
