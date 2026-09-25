@@ -1,0 +1,10 @@
+# Every file here ends up either baked into a Linux container image (as a
+# script executed by shebang) or read by tools inside one. A CRLF line
+# ending silently breaks a shebang line ("#!/bin/sh\r" is not a valid
+# interpreter path) and shows up as the container failing to start, not as
+# a build error — confirmed live: this repo had no .gitattributes, so a
+# checkout on Windows with the common core.autocrlf=true setting converted
+# tracked LF blobs to CRLF in the working tree, and podman build copies
+# from the working tree, not from git. Force LF unconditionally, regardless
+# of any local core.autocrlf setting, so this can't recur on any platform.
+* text=auto eol=lf
